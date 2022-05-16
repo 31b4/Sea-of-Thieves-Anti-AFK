@@ -1,16 +1,31 @@
 print("asd")
-loop {
-    Gosub,CheckSotRunning
-    Gosub,CheckSotActive
-    if(sot_running && sot_active){
-        print("SOT is running\n")
-        Gosub, Jump
-        Sleep, 75
-    }
-    Sleep, 1000
-   
-}
 
+;start the anti afk
+AntiAFKActive := False
+
+g::
+AntiAFKActive := False
+return
+
+h::
+AntiAFKActive := True
+    loop {
+        if(AntiAFKActive){
+            Gosub,CheckSotRunning
+            Gosub,CheckSotActive
+            if(sot_running && sot_active){
+                print("SOT is running\n")
+                Gosub, Jump
+                Sleep, 75
+            }
+        }
+        else{
+            return
+        }
+        Sleep, 1000
+    
+    }
+return
 
 
 Jump:
@@ -117,4 +132,4 @@ DebugConsoleInitialize()
 
 
 
-End::ExitApp
+j::ExitApp
