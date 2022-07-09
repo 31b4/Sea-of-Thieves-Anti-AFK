@@ -1,21 +1,45 @@
-print("asd")
+;SOT ANIT AFK SOFTWARE PRO V2 PLUS - 31b4
+;if u r sot dev PLEASE fix hitreg :D
+;GUI config
+Gui, Add, Button, x10 y10 gBUTTON_PRESSED, start
+Gui, Show, w500 h500,SoT Anti AFK Software Pro V2 Plus
+AntiAFKActive := False ;status of anti afk
+Return
 
-;start the anti afk
-AntiAFKActive := False
+GuiClose:
+    ExitApp
+;END GUI config
 
-g::
-AntiAFKActive := False
+
+BUTTON_PRESSED:
+    global AntiAFKActive
+    if(AntiAFKActive) {
+        global AntiAFKActive := False
+    }  
+    else{
+        global AntiAFKActive := True
+        Start_Anti_AFK()
+    }
 return
 
-h::
-AntiAFKActive := True
+;SHORTCUTS---------------------
+g:: ;pause
+    global AntiAFKActive := False
+
+return
+
+h:: ;start
+    global AntiAFKActive := True
+    Start_Anti_AFK()
+return
+;-------------------------------
+
+Start_Anti_AFK(){
     loop {
+        global AntiAFKActive ;HIBAAAAAAAAAAAAAAAA
         if(AntiAFKActive){
-            Gosub,CheckSotRunning
-            Gosub,CheckSotActive
-            if(sot_running && sot_active){
-                print("SOT is running\n")
-                Gosub, Jump
+            if(CheckSotRunning() && CheckSotActive()){
+                Jump()
                 Sleep, 75
             }
         }
@@ -25,96 +49,40 @@ AntiAFKActive := True
         Sleep, 1000
     
     }
-return
-
-
-Jump:
-Send, {Space Down}
-sleep, 50
-Send, {Space Up}
-return
-
-CheckSotRunning:
-Process, Exist, SoTGame.exe
-If (!ErrorLevel = 0) {
-    ; Set sot Running Variable
-    sot_running = 1
-} else {
-    ; Set sot Running Variable
-    sot_running = 0
-    
-}
-return
-
-CheckSotActive:
-WinGetTitle, active_window_title, A
-If (active_window_title = "Sea of Thieves") {
-    ; Set sot active variable
-    sot_active = 1
-
-} else {
-    ; Set sot active variable
-    sot_active = 0
-    
-}
-return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-print(str)
-{
- global h_stdout
- DebugConsoleInitialize()  ; start console window if not yet started
- str .= "`n" ; add line feed
- DllCall("WriteFile", "uint", h_Stdout, "uint", &str, "uint", StrLen(str), "uint*", BytesWritten, "uint", NULL) ; write into the console
- WinSet, Bottom,, ahk_id %h_stout%  ; keep console on bottom
+    Return
 }
 
-DebugConsoleInitialize()
-{
-   global h_Stdout     ; Handle for console
-   static is_open = 0  ; toogle whether opened before
-   if (is_open = 1)     ; yes, so don't open again
-     return
-	 
-   is_open := 1	
-   ; two calls to open, no error check (it's debug, so you know what you are doing)
-   DllCall("AttachConsole", int, -1, int)
-   DllCall("AllocConsole", int)
 
-   dllcall("SetConsoleTitle", "str","Paddy Debug Console")    ; Set the name. Example. Probably could use a_scriptname here 
-   h_Stdout := DllCall("GetStdHandle", "int", -11) ; get the handle
-   WinSet, Bottom,, ahk_id %h_stout%      ; make sure it's on the bottom
-   WinActivate,Lightroom   ; Application specific; I need to make sure this application is running in the foreground. YMMV
-   return
+;FUNCTIONS-------------------------
+Jump(){
+    Send, {Space Down}
+    sleep, 50
+    Send, {Space Up}
+    return
+}
+
+
+CheckSotRunning(){
+    Process, Exist, SoTGame.exe
+    If (!ErrorLevel = 0) {
+        Return True ; running
+    } else {
+        Return False ; not running   
+    }
+}
+
+CheckSotActive(){
+    WinGetTitle, active_window_title, A
+    If (active_window_title = "Sea of Thieves") {
+         Return True ;active
+    } else {
+        Return False ;inactive
+    }
 }
 
 
 
+;---------------------------------------
 
 
 
@@ -126,10 +94,4 @@ DebugConsoleInitialize()
 
 
 
-
-
-
-
-
-
-j::ExitApp
+j::ExitApp ;Full stop
