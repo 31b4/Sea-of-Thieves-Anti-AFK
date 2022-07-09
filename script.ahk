@@ -1,7 +1,10 @@
 ;SOT ANIT AFK SOFTWARE PRO V2 PLUS - 31b4
 ;if u r sot dev PLEASE fix hitreg :D
+#Usehook
 ;GUI config
-Gui, Add, Button, x10 y10 gBUTTON_PRESSED, start
+Gui, Color, cd5c27
+Gui, Add, Button, x10 y10 gStart_Button, start
+Gui, Add, Button, x60 y10 gStop_Button, stop
 Gui, Show, w500 h500,SoT Anti AFK Software Pro V2 Plus
 AntiAFKActive := False ;status of anti afk
 Return
@@ -11,30 +14,29 @@ GuiClose:
 ;END GUI config
 
 
-BUTTON_PRESSED:
-    global AntiAFKActive
-    if(AntiAFKActive) {
-        global AntiAFKActive := False
-    }  
-    else{
-        global AntiAFKActive := True
-        Start_Anti_AFK()
-    }
+Start_Button:
+    Gui, Color, 7dca5c
+    Start_Anti_AFK()
+    
 return
-
+Stop_Button:
+    Gui, Color, cd5c27
+    Stop()
+return
 ;SHORTCUTS---------------------
 g:: ;pause
-    global AntiAFKActive := False
+    Send, g
+    Stop()
 
 return
 
 h:: ;start
-    global AntiAFKActive := True
     Start_Anti_AFK()
 return
 ;-------------------------------
 
 Start_Anti_AFK(){
+    global AntiAFKActive := True
     loop {
         global AntiAFKActive ;HIBAAAAAAAAAAAAAAAA
         if(AntiAFKActive){
@@ -79,7 +81,9 @@ CheckSotActive(){
         Return False ;inactive
     }
 }
-
+Stop(){
+    global AntiAFKActive := False
+}
 
 
 ;---------------------------------------
